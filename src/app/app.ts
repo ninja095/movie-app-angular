@@ -26,7 +26,7 @@ export class App {
   readonly hasMore = this.movieService.hasMore;
 
   searchForm = this.formBuilder.group({
-    title: [''],
+    title: ['']
   });
 
   isLoading = signal(false);
