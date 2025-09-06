@@ -1,5 +1,5 @@
 import {CommonModule} from '@angular/common';
-import {Component, DestroyRef, ElementRef, inject, signal, ViewChild} from '@angular/core';
+import {Component, DestroyRef, inject, signal} from '@angular/core';
 import {MovieCard} from './components/movie-card/movie-card';
 import {Modal} from './components/modal/modal';
 import {FormBuilder, FormsModule, ReactiveFormsModule} from '@angular/forms';
@@ -15,7 +15,6 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
   styleUrl: './app.scss'
 })
 export class App {
-  @ViewChild('moviesContainer') moviesContainer!: ElementRef;
 
   private movieService = inject(MovieService);
   private formBuilder = inject(FormBuilder);
