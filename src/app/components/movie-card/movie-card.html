@@ -1,0 +1,13 @@
+@if (movie(); as movie) {
+  <article class="movie-card">
+    <img class="movie-poster"
+      [src]="movie.poster_path | tmdbImage:'w200'"
+      [alt]="movie.title"
+    />
+    <div class="movie-info">
+      <h3 class="movie-title">{{ movie.title }}</h3>
+      <p class="movie-year">{{ movie.release_date | date:'yyyy' }}</p>
+    </div>
+  </article>
+}
+

@@ -1,1 +1,9 @@
 /* You can add global styles to this file, and also import other style files */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%; /* Явно задаём 100% */
+  overflow: hidden; /* 🔥 Главное: убираем скролл у body и html */
+  font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}

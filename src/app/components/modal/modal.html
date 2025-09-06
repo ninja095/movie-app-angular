@@ -1,0 +1,30 @@
+<div class="backdrop" (click)="close.emit()"></div>
+
+<div class="modal">
+  <button class="close-btn" (click)="close.emit()">×</button>
+
+  @if (movie(); as movie) {
+    <div class="modal-content">
+      <div class="modal-poster">
+        <img
+          [src]="movie.poster_path | tmdbImage:'w500'"
+          [alt]="movie.title"
+        />
+        <span class="vote-average">{{ movie.vote_average | number:'1.1-1' }}</span>
+      </div>
+
+      <div class="modal-info">
+        <h2>{{ movie.title }}</h2>
+        <p>{{ movie.release_date | date:'yyyy' }}</p>
+
+        <div class="genres-container">
+          @for (genre of movie.genres; track genre) {
+            <span class="genre-badge">{{ genre.name }}</span>
+          }
+        </div>
+
+        <p>{{ movie.overview }}</p>
+      </div>
+    </div>
+  }
+</div>
