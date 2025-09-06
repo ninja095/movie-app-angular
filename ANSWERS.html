@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Интерактивное руководство по JavaScript</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chosen Palette: Calm Harmony -->
+  <!-- Application Structure Plan: Создана одностраничная структура с боковой навигацией для быстрого переключения между четырьмя основными темами (Распространение событий, Promise, ООП, Работа браузера). Такой подход выбран для удобства пользователя, позволяя ему нелинейно изучать материал и фокусироваться на интересующих темах. Каждая секция содержит интерактивные элементы (анимированные диаграммы, симуляции, переключатели), чтобы сделать сложные концепции более наглядными и легкими для понимания, что предпочтительнее статического текста. -->
+  <!-- Visualization & Content Choices:
+      1. Распространение событий -> Цель: Показать 3 фазы -> Визуализация: Интерактивная HTML/CSS диаграмма -> Взаимодействие: Анимация по клику, подсвечивающая фазы погружения, цели и всплытия. -> Обоснование: Анимация наглядно демонстрирует поток событий, что сложно передать статикой. -> Метод: Vanilla JS + Tailwind.
+      2. Promise и Event Loop -> Цель: Объяснить асинхронность -> Визуализация: Симуляция работы Event Loop (Стек, API, Очереди) -> Взаимодействие: Запуск симуляции, которая показывает движение задач между блоками. -> Обоснование: Динамическая симуляция делает абстрактный процесс конкретным и понятным. -> Метод: Vanilla JS + Tailwind.
+      3. ООП в JS -> Цель: Сравнить подходы -> Визуализация: Контент с переключателем (табы) -> Взаимодействие: Переключение между примерами кода для Классов (ES6) и Прототипов. -> Обоснование: Прямое сравнение "лоб в лоб" помогает лучше увидеть различия. -> Метод: Vanilla JS + Tailwind.
+      4. Работа браузера -> Цель: Показать последовательность загрузки страницы -> Визуализация: Вертикальная интерактивная временная шкала -> Взаимодействие: Клик по шагу на шкале раскрывает подробное описание. -> Обоснование: Формат "аккордеона" позволяет скрыть детали, сохраняя общую картину, и углубляться по мере необходимости. -> Метод: Vanilla JS + Tailwind.
+  -->
+  <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .nav-link { transition: all 0.2s ease-in-out; }
+    .nav-link.active { background-color: #3b82f6; color: white; }
+    .nav-link:not(.active):hover { background-color: #e5e7eb; }
+    .content-section { display: none; }
+    .content-section.active { display: block; animation: fadeIn 0.5s ease-in-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .event-path-node { transition: all 0.3s ease-in-out; }
+    .event-path-node.capturing { background-color: #60a5fa; color: white; transform: scale(1.05); }
+    .event-path-node.target { background-color: #2563eb; color: white; transform: scale(1.1); }
+    .event-path-node.bubbling { background-color: #93c5fd; color: white; transform: scale(1.05); }
+    .timeline-item-content { max-height: 0; overflow: hidden; transition: max-height 0.5s ease-in-out; }
+    .js-keyword { color: #818cf8; }
+    .js-method { color: #facc15; }
+    .js-string { color: #4ade80; }
+    .js-comment { color: #9ca3af; }
+  </style>
+  <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+</head>
+<body class="bg-slate-50 text-slate-800">
+<div class="flex flex-col md:flex-row min-h-screen">
+  <aside class="w-full md:w-64 bg-white border-b md:border-r border-slate-200 flex-shrink-0">
+    <div class="p-4 border-b border-slate-200">
+      <h1 class="text-xl font-bold text-blue-600">JS: Ключевые концепции</h1>
+    </div>
+    <nav id="navigation" class="p-2 flex flex-row md:flex-col overflow-x-auto">
+      <a href="#event-propagation" class="nav-link block p-3 rounded-md font-medium whitespace-nowrap" data-target="event-propagation">Распространение событий</a>
+      <a href="#promises" class="nav-link block p-3 rounded-md font-medium whitespace-nowrap" data-target="promises">Promise и Event Loop</a>
+      <a href="#oop" class="nav-link block p-3 rounded-md font-medium whitespace-nowrap" data-target="oop">ООП в JavaScript</a>
+      <a href="#browser" class="nav-link block p-3 rounded-md font-medium whitespace-now-wrap" data-target="browser">Как работает браузер</a>
+    </nav>
+  </aside>
+
+  <main class="flex-1 p-4 sm:p-6 md:p-8">
+    <div id="content-container">
+      <!-- Секция 1: Распространение событий -->
+      <section id="event-propagation" class="content-section space-y-6">
+        <h2 class="text-3xl font-bold border-b pb-2">Распространение событий (Event Propagation)</h2>
+        <p class="text-lg">Это механизм, описывающий, как события проходят через DOM-дерево. Понимание этого процесса критически важно для эффективной обработки событий и создания сложных интерактивных интерфейсов. Он состоит из трех фаз.</p>
+
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h3 class="text-xl font-bold mb-4">Интерактивная диаграмма</h3>
+          <p class="mb-4">Нажмите кнопку ниже, чтобы визуализировать, как событие клика проходит от `window` до кнопки "Цель" и обратно.</p>
+          <div id="event-path-diagram" class="space-y-2 text-center">
+            <div class="event-path-node border-2 border-slate-300 p-3 rounded-md max-w-lg mx-auto" data-node="window">Window
+              <div class="event-path-node border-2 border-slate-300 p-3 rounded-md mt-2" data-node="document">Document
+                <div class="event-path-node border-2 border-slate-300 p-3 rounded-md mt-2" data-node="html">HTML
+                  <div class="event-path-node border-2 border-slate-300 p-3 rounded-md mt-2" data-node="body">Body
+                    <div class="event-path-node border-2 border-slate-300 p-3 rounded-md mt-2" data-node="div">Div
+                      <button id="target-btn" class="event-path-node bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md mt-2" data-node="button">Цель</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="mt-4 text-center">
+            <button id="run-propagation-sim" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Запустить анимацию</button>
+            <p id="propagation-phase-info" class="mt-2 font-medium text-lg h-6"></p>
+          </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h3 class="text-xl font-bold mb-2">Применение на практике</h3>
+          <ul class="list-disc list-inside space-y-2">
+            <li><strong class="font-semibold">Делегирование событий (Event Delegation) 💡:</strong> Эффективный способ для обработки событий на множестве дочерних элементов. Вместо того чтобы вешать обработчик на каждый элемент, вы добавляете один на их общего родителя. Благодаря фазе всплытия, клик по дочернему элементу "всплывет" до родителя, где его можно обработать. Это значительно экономит память.</li>
+            <li><strong class="font-semibold">Остановка распространения 🚫:</strong> Иногда нужно, чтобы событие не "всплывало" до родительских элементов. Для этого используется метод `event.stopPropagation()`. Например, если клик по элементу внутри модального окна не должен закрывать его, хотя обработчик закрытия висит на оверлее.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Секция 2: Promise и Event Loop -->
+      <section id="promises" class="content-section space-y-6">
+        <h2 class="text-3xl font-bold border-b pb-2">Promise и Событийный цикл (Event Loop)</h2>
+        <p class="text-lg">Promise — это объект, представляющий результат асинхронной операции. Он позволяет избежать "ада обратных вызовов". Событийный цикл — это механизм, который позволяет JavaScript, будучи однопоточным, выполнять асинхронные задачи.</p>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h3 class="text-xl font-bold mb-4">Симуляция Event Loop</h3>
+          <p class="mb-4">Нажмите "Старт", чтобы увидеть, как задачи из кода перемещаются между стеком вызовов, Web API и очередями. Обратите внимание, что задача от Promise (микрозадача) выполняется раньше, чем от setTimeout (макрозадача).</p>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-center">
+            <div class="bg-slate-100 p-2 rounded">
+              <h4 class="font-bold">Call Stack</h4>
+              <div id="call-stack-view" class="h-48 border-2 border-slate-300 p-2 rounded space-y-1 overflow-hidden"></div>
+            </div>
+            <div class="bg-slate-100 p-2 rounded">
+              <h4 class="font-bold">Web APIs</h4>
+              <div id="web-apis-view" class="h-48 border-2 border-slate-300 p-2 rounded space-y-1 overflow-hidden"></div>
+            </div>
+            <div class="bg-slate-100 p-2 rounded">
+              <h4 class="font-bold">Microtask Queue</h4>
+              <div id="microtask-queue-view" class="h-48 border-2 border-slate-300 p-2 rounded space-y-1 overflow-hidden"></div>
+            </div>
+            <div class="bg-slate-100 p-2 rounded">
+              <h4 class="font-bold">Callback Queue</h4>
+              <div id="callback-queue-view" class="h-48 border-2 border-slate-300 p-2 rounded space-y-1 overflow-hidden"></div>
+            </div>
+          </div>
+          <div class="mt-4 flex justify-center items-center gap-4">
+            <button id="run-event-loop-sim" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Старт</button>
+            <div id="event-loop-status" class="font-medium text-slate-600 h-6"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Секция 3: ООП -->
+      <section id="oop" class="content-section space-y-6">
+        <h2 class="text-3xl font-bold border-b pb-2">ООП в JavaScript</h2>
+        <p class="text-lg">Объектно-ориентированное программирование — это парадигма, основанная на концепции "объектов". JavaScript является прототипно-ориентированным языком, но с ES6 получил синтаксис классов, который является "синтаксическим сахаром" над прототипами.</p>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h3 class="text-xl font-bold mb-4">Ключевые принципы</h3>
+          <ul class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <li class="bg-slate-100 p-4 rounded-md"><strong>Инкапсуляция 📦:</strong> Скрытие внутренних деталей объекта и предоставление доступа к данным только через публичный интерфейс.</li>
+            <li class="bg-slate-100 p-4 rounded-md"><strong>Наследование 👨‍👧:</strong> Позволяет новым классам наследовать свойства и методы от существующих.</li>
+            <li class="bg-slate-100 p-4 rounded-md"><strong>Полиморфизм 🎭:</strong> Возможность использования одного и того же интерфейса для разных типов данных.</li>
+            <li class="bg-slate-100 p-4 rounded-md"><strong>Абстракция 🧐:</strong> Выделение наиболее важных характеристик объекта.</li>
+          </ul>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h3 class="text-xl font-bold mb-4">Сравнение реализаций</h3>
+          <div class="flex justify-center border-b border-slate-200 mb-4">
+            <button class="oop-toggle-btn p-3 font-medium border-b-2 border-blue-600 text-blue-600" data-target="oop-classes">Классы (ES6)</button>
+            <button class="oop-toggle-btn p-3 font-medium border-b-2 border-transparent text-slate-500" data-target="oop-prototypes">Прототипы</button>
+          </div>
+          <div id="oop-classes" class="oop-content">
+                             <pre><code class="language-js bg-slate-900 text-white p-4 rounded-md block overflow-x-auto"><span class="js-keyword">class</span> Animal {
+                               <span class="js-keyword">constructor</span>(name) { <span class="js-keyword">this</span>.<span class="js-method">name</span> = name; }
+  <span class="js-method">speak</span>() { <span class="js-method">console</span>.<span class="js-method">log</span>(<span class="js-string">`$</span>{<span class="js-keyword">this</span>.<span class="js-method">name</span>}<span class="js-string"> издает звук.`</span>); }
+}
+<span class="js-keyword">class</span> Dog <span class="js-keyword">extends</span> Animal {
+                               <span class="js-keyword">constructor</span>(name, breed) {
+    <span class="js-keyword">super</span>(name);
+    <span class="js-keyword">this</span>.<span class="js-method">breed</span> = breed;
+  }
+  <span class="js-method">speak</span>() { <span class="js-method">console</span>.<span class="js-method">log</span>(<span class="js-string">`$</span>{<span class="js-keyword">this</span>.<span class="js-method">name</span>}<span class="js-string"> лает.`</span>); }
+}
+<span class="js-keyword">const</span> dog = <span class="js-keyword">new</span> Dog(<span class="js-string">'Шарик'</span>, <span class="js-string">'Лабрадор'</span>);
+<span class="js-method">dog</span>.<span class="js-method">speak</span>(); <span class="js-comment">// "Шарик лает."</span></code></pre>
+          </div>
+          <div id="oop-prototypes" class="oop-content hidden">
+                             <pre><code class="language-js bg-slate-900 text-white p-4 rounded-md block overflow-x-auto"><span class="js-keyword">function</span> Animal(name) { <span class="js-keyword">this</span>.<span class="js-method">name</span> = name; }
+Animal.<span class="js-method">prototype</span>.<span class="js-method">speak</span> = <span class="js-keyword">function</span>() {
+                               <span class="js-method">console</span>.<span class="js-method">log</span>(<span class="js-string">`$</span>{<span class="js-keyword">this</span>.<span class="js-method">name</span>}<span class="js-string"> издает звук.`</span>);
+};
+<span class="js-keyword">function</span> Dog(name, breed) {
+                               <span class="js-method">Animal</span>.<span class="js-method">call</span>(<span class="js-keyword">this</span>, name);
+                               <span class="js-keyword">this</span>.<span class="js-method">breed</span> = breed;
+}
+Dog.<span class="js-method">prototype</span> = Object.<span class="js-method">create</span>(Animal.<span class="js-method">prototype</span>);
+Dog.<span class="js-method">prototype</span>.<span class="js-method">constructor</span> = Dog;
+Dog.<span class="js-method">prototype</span>.<span class="js-method">speak</span> = <span class="js-keyword">function</span>() {
+                               <span class="js-method">console</span>.<span class="js-method">log</span>(<span class="js-string">`$</span>{<span class="js-keyword">this</span>.<span class="js-method">name</span>}<span class="js-string"> лает.`</span>);
+};
+<span class="js-keyword">const</span> dog2 = <span class="js-keyword">new</span> Dog(<span class="js-string">'Дружок'</span>, <span class="js-string">'Корги'</span>);
+<span class="js-method">dog2</span>.<span class="js-method">speak</span>(); <span class="js-comment">// "Дружок лает."</span></code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- Секция 4: Браузер -->
+      <section id="browser" class="content-section space-y-6">
+        <h2 class="text-3xl font-bold border-b pb-2">Как браузер обрабатывает URL?</h2>
+        <p class="text-lg">Процесс от ввода URL в адресную строку до отображения страницы — это сложная последовательность сетевых и рендеринговых операций. Ниже представлена интерактивная шкала этого процесса.</p>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h3 class="text-xl font-bold mb-4">Временная шкала загрузки</h3>
+          <div class="space-y-4">
+            <div class="timeline-item">
+              <button class="timeline-item-header w-full text-left p-3 bg-slate-100 hover:bg-slate-200 rounded-md font-semibold flex justify-between items-center">
+                <span>1. Обработка URL 🌐</span>
+                <span class="text-xl transform transition-transform">▼</span>
+              </button>
+              <div class="timeline-item-content px-3 pt-2">
+                <p>Браузер разбирает введенный URL на компоненты: протокол (http/https), домен, порт, путь и параметры.</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <button class="timeline-item-header w-full text-left p-3 bg-slate-100 hover:bg-slate-200 rounded-md font-semibold flex justify-between items-center">
+                <span>2. Поиск IP-адреса (DNS-запрос) 📞</span>
+                <span class="text-xl transform transition-transform">▼</span>
+              </button>
+              <div class="timeline-item-content px-3 pt-2">
+                <p>Если IP-адреса нет в кеше, браузер отправляет DNS-запрос, чтобы преобразовать доменное имя (например, google.com) в IP-адрес. Этот процесс также включает несколько уровней кеширования.</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <button class="timeline-item-header w-full text-left p-3 bg-slate-100 hover:bg-slate-200 rounded-md font-semibold flex justify-between items-center">
+                <span>3. Установление TCP-соединения 🤝</span>
+                <span class="text-xl transform transition-transform">▼</span>
+              </button>
+              <div class="timeline-item-content px-3 pt-2">
+                <p>Браузер использует полученный IP-адрес для установления TCP-соединения с сервером. Для HTTPS происходит дополнительное TLS/SSL-рукопожатие для шифрования.</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <button class="timeline-item-header w-full text-left p-3 bg-slate-100 hover:bg-slate-200 rounded-md font-semibold flex justify-between items-center">
+                <span>4. Отправка HTTP-запроса 📬</span>
+                <span class="text-xl transform transition-transform">▼</span>
+              </button>
+              <div class="timeline-item-content px-3 pt-2">
+                <p>Браузер отправляет HTTP-запрос, который включает метод (GET, POST), путь, заголовки и, возможно, тело запроса.</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <button class="timeline-item-header w-full text-left p-3 bg-slate-100 hover:bg-slate-200 rounded-md font-semibold flex justify-between items-center">
+                <span>5. Получение ответа и Рендеринг 🎨</span>
+                <span class="text-xl transform transition-transform">▼</span>
+              </button>
+              <div class="timeline-item-content px-3 pt-2">
+                <p>Браузер получает ответ и начинает отрисовку: парсит HTML (создает DOM), CSS (создает CSSOM), объединяет их в Дерево рендера, рассчитывает размеры и позиции (Layout), и наконец, рисует пиксели на экране (Paint).</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const navigationLinks = document.querySelectorAll('#navigation .nav-link');
+    const contentSections = document.querySelectorAll('.content-section');
+    const contentContainer = document.getElementById('content-container');
+
+    function updateContent(hash) {
+      const targetId = hash ? hash.substring(1) : 'event-propagation';
+      let activeSectionFound = false;
+
+      navigationLinks.forEach(link => {
+        if (link.dataset.target === targetId) {
+          link.classList.add('active');
+        } else {
+          link.classList.remove('active');
+        }
+      });
+
+      contentSections.forEach(section => {
+        if (section.id === targetId) {
+          section.classList.add('active');
+          activeSectionFound = true;
+        } else {
+          section.classList.remove('active');
+        }
+      });
+
+      if (!activeSectionFound && contentSections.length > 0) {
+        contentSections[0].classList.add('active');
+        if (navigationLinks.length > 0) {
+          navigationLinks[0].classList.add('active');
+          window.location.hash = navigationLinks[0].hash;
+        }
+      }
+    }
+
+    navigationLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.location.hash = e.currentTarget.hash;
+      });
+    });
+
+    window.addEventListener('hashchange', () => updateContent(window.location.hash));
+    updateContent(window.location.hash || '#event-propagation');
+
+    // --- Интерактивность для секции 1: Распространение событий ---
+    const runPropagationSimBtn = document.getElementById('run-propagation-sim');
+    const propagationPhaseInfo = document.getElementById('propagation-phase-info');
+    const pathNodes = document.querySelectorAll('.event-path-node');
+
+    runPropagationSimBtn.addEventListener('click', () => {
+      runPropagationSimBtn.disabled = true;
+      const pathOrder = [
+        { node: 'window', phase: 'capturing', text: 'Фаза Погружения (Capturing)' },
+        { node: 'document', phase: 'capturing', text: 'Фаза Погружения (Capturing)' },
+        { node: 'html', phase: 'capturing', text: 'Фаза Погружения (Capturing)' },
+        { node: 'body', phase: 'capturing', text: 'Фаза Погружения (Capturing)' },
+        { node: 'div', phase: 'capturing', text: 'Фаза Погружения (Capturing)' },
+        { node: 'button', phase: 'target', text: 'Фаза Цели (Target)' },
+        { node: 'div', phase: 'bubbling', text: 'Фаза Всплытия (Bubbling)' },
+        { node: 'body', phase: 'bubbling', text: 'Фаза Всплытия (Bubbling)' },
+        { node: 'html', phase: 'bubbling', text: 'Фаза Всплытия (Bubbling)' },
+        { node: 'document', phase: 'bubbling', text: 'Фаза Всплытия (Bubbling)' },
+        { node: 'window', phase: 'bubbling', text: 'Фаза Всплытия (Bubbling)' },
+      ];
+
+      let currentStep = 0;
+
+      const resetStyles = () => {
+        pathNodes.forEach(el => el.classList.remove('capturing', 'target', 'bubbling'));
+        propagationPhaseInfo.textContent = '';
+      };
+
+      resetStyles();
+
+      const step = () => {
+        if (currentStep < pathOrder.length) {
+          resetStyles();
+          const { node, phase, text } = pathOrder[currentStep];
+          const el = document.querySelector(`[data-node="${node}"]`);
+          if (el) el.classList.add(phase);
+          propagationPhaseInfo.textContent = text;
+          currentStep++;
+          setTimeout(step, 500);
+        } else {
+          resetStyles();
+          propagationPhaseInfo.textContent = 'Анимация завершена!';
+          runPropagationSimBtn.disabled = false;
+        }
+      };
+      step();
+    });
+
+    // --- Интерактивность для секции 2: Event Loop ---
+    const runEventLoopSimBtn = document.getElementById('run-event-loop-sim');
+    const views = {
+      stack: document.getElementById('call-stack-view'),
+      apis: document.getElementById('web-apis-view'),
+      micro: document.getElementById('microtask-queue-view'),
+      macro: document.getElementById('callback-queue-view'),
+    };
+    const statusEl = document.getElementById('event-loop-status');
+
+    function createTaskElement(text, type) {
+      const el = document.createElement('div');
+      el.textContent = text;
+      const color = type === 'sync' ? 'bg-green-200' : (type === 'micro' ? 'bg-yellow-200' : 'bg-orange-200');
+      el.className = `p-1 rounded text-sm ${color} transition-all duration-500`;
+      return el;
+    }
+
+    runEventLoopSimBtn.addEventListener('click', async () => {
+      runEventLoopSimBtn.disabled = true;
+      Object.values(views).forEach(v => v.innerHTML = '');
+      statusEl.textContent = 'Симуляция запущена...';
+
+      const sleep = (ms) => new Promise(res => setTimeout(res, ms));
+
+      const scriptStart = createTaskElement('script start', 'sync');
+      views.stack.appendChild(scriptStart);
+      await sleep(2000);
+
+      const setTimeoutTask = createTaskElement('setTimeout(cb1)', 'macro');
+      views.stack.appendChild(setTimeoutTask);
+      await sleep(2000);
+      views.apis.appendChild(views.stack.lastChild);
+      await sleep(2000);
+
+      const promiseTask = createTaskElement('Promise.then(cb2)', 'micro');
+      views.stack.appendChild(promiseTask);
+      await sleep(2000);
+      views.micro.appendChild(views.stack.lastChild);
+      await sleep(2000);
+
+      if (views.apis.lastChild) {
+        views.macro.appendChild(views.apis.lastChild);
+      }
+
+      const scriptEnd = createTaskElement('script end', 'sync');
+      views.stack.appendChild(scriptEnd);
+      await sleep(2000);
+
+      if (views.stack.lastChild) views.stack.lastChild.remove();
+      if (views.stack.lastChild) views.stack.lastChild.remove();
+
+      statusEl.textContent = 'Стек пуст, Event Loop проверяет очереди...';
+      await sleep(2500);
+
+      statusEl.textContent = 'Выполнение микрозадачи (Promise)...';
+      if (views.micro.lastChild) {
+        views.stack.appendChild(views.micro.lastChild);
+      }
+      await sleep(2500);
+      if (views.stack.lastChild) views.stack.lastChild.remove();
+
+      statusEl.textContent = 'Выполнение макрозадачи (setTimeout)...';
+      if (views.macro.lastChild) {
+        views.stack.appendChild(views.macro.lastChild);
+      }
+      await sleep(2500);
+      if (views.stack.lastChild) views.stack.lastChild.remove();
+
+      statusEl.textContent = 'Симуляция завершена!';
+      runEventLoopSimBtn.disabled = false;
+    });
+
+    // --- Интерактивность для секции 3: ООП ---
+    const oopToggleBtns = document.querySelectorAll('.oop-toggle-btn');
+    const oopContents = document.querySelectorAll('.oop-content');
+
+    oopToggleBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        oopToggleBtns.forEach(b => {
+          b.classList.remove('border-blue-600', 'text-blue-600');
+          b.classList.add('border-transparent', 'text-slate-500');
+        });
+        btn.classList.add('border-blue-600', 'text-blue-600');
+        btn.classList.remove('border-transparent', 'text-slate-500');
+
+        oopContents.forEach(content => {
+          if(content.id === btn.dataset.target) {
+            content.classList.remove('hidden');
+          } else {
+            content.classList.add('hidden');
+          }
+        });
+      });
+    });
+
+    // --- Интерактивность для секции 4: Браузер (Timeline) ---
+    const timelineHeaders = document.querySelectorAll('.timeline-item-header');
+
+    timelineHeaders.forEach(header => {
+      header.addEventListener('click', () => {
+        const content = header.nextElementSibling;
+        const icon = header.querySelector('span:last-child');
+
+        if (content.style.maxHeight) {
+          content.style.maxHeight = null;
+          icon.style.transform = 'rotate(0deg)';
+        } else {
+          timelineHeaders.forEach(h => {
+            h.nextElementSibling.style.maxHeight = null;
+            h.querySelector('span:last-child').style.transform = 'rotate(0deg)';
+          });
+          content.style.maxHeight = content.scrollHeight + "px";
+          icon.style.transform = 'rotate(180deg)';
+        }
+      });
+    });
+
+  });
+</script>
+</body>
+</html>

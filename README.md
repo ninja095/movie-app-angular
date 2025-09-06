@@ -1,59 +1,43 @@
-# MoviesApp
+# 🎬 Movie Catalog — Angular приложение
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.2.1.
+Удобный каталог фильмов с поиском, бесконечной подгрузкой и детальным просмотром.  
+Проект построен на **Angular**, использует **TMDb API** и демонстрирует современные практики разработки.
 
-## Development server
+[![Angular](https://img.shields.io/badge/Angular-3F51B5?logo=angular&logoColor=white)](https://angular.io)
+[![TMDb](https://img.shields.io/badge/TMDb-F5C518?logo=themoviedb&logoColor=black)](https://www.themoviedb.org/)
 
-To start a local development server, run:
+---
+
+## 🔧 Функции
+
+- 🔍 Поиск фильмов в реальном времени
+- 📚 Просмотр популярных фильмов
+- 🔁 Бесконечный скролл (infinite scroll)
+- 📱 Адаптивный дизайн (mobile-first)
+- 🎟 Детали фильма в модальном окне
+- 🏷 Жанры как бейджи
+- ⭐ Отображение рейтинга
+
+---
+
+## 🚀 Как запустить проект
+
+### Предварительные требования
+- [Node.js](https://nodejs.org/) (v16+)
+- [Angular CLI](https://angular.io/cli) (`npm install -g @angular/cli`)
+
+### Установка и запуск
 
 ```bash
+# 1. Клонировать репозиторий
+git clone https://github.com/ninja095/movie-app-angular.git
+cd movie-app-angular
+
+# 2. Установить зависимости
+npm install
+
+# 3. Запустить сервер разработки
 ng serve
-```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+# 4. Открыть в браузере
+http://localhost:4200
