@@ -10,7 +10,7 @@ export class MovieService {
   private http = inject(HttpClient);
 
   private apiUrl = 'https://api.themoviedb.org/3';
-  private apiKey = "f43d35a1eef997efb796523ca6808ffb";
+  private apiKey = 'f43d35a1eef997efb796523ca6808ffb';
 
   filteredMovies = signal<Movie[]>([]);
   currentPage = signal<number>(1);
