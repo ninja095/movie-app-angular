@@ -1,5 +1,5 @@
 import {CommonModule} from '@angular/common';
-import {Component, DestroyRef, ElementRef, inject, OnInit, signal, ViewChild} from '@angular/core';
+import {Component, DestroyRef, ElementRef, inject, signal, ViewChild} from '@angular/core';
 import {MovieCard} from './components/movie-card/movie-card';
 import {Modal} from './components/modal/modal';
 import {FormBuilder, FormsModule, ReactiveFormsModule} from '@angular/forms';

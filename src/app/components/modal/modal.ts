@@ -1,5 +1,5 @@
-import {Component, computed, input, output} from '@angular/core';
-import {Movie, MovieDetails} from '../../interfaces/Movie';
+import {Component, input, output} from '@angular/core';
+import {MovieDetails} from '../../interfaces/Movie';
 import {TmdbImagePipe} from '../../pipes/tmdb-image.pipe';
 import {DatePipe, DecimalPipe} from '@angular/common';
 
